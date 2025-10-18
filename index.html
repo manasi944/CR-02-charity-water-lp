@@ -1,47 +1,421 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Charity Water Landing Page</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Charity: Water Landing Page</title>
+  <style>
+    /* Define color variables so it's easy to change theme later */
+    :root {
+      /* Primary colors */
+      --yellow: #FFC907;
+      --blue: #2E9DF7;
+
+      /* Secondary colors */
+      --light-blue: #8BD1CB;
+      --green: #4FCB53;
+      --orange: #FF902A;
+      --red: #F5402C;
+      --dark-green: #159A48;
+      --pink: #F16061;
+
+      /* Neutral */
+      --white: #ffffff;
+      --muted: #e5e5e5;
+      --dark: #222222;
+    }
+
+    /* Font stack: Proxima Nova / Avenir then fallbacks */
+    body {
+      margin: 0;
+      font-family: "Proxima Nova", "Avenir", Arial, sans-serif;
+      color: var(--dark);
+      background-color: var(--white);
+      /* A subtle page background to make content pop */
+      background-image: radial-gradient(circle at 2% 2%, rgba(46,157,247,0.02), transparent 10%),
+                        radial-gradient(circle at 98% 98%, rgba(255,201,7,0.02), transparent 10%);
+    }
+
+    /* Header layout */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background-color: var(--white);
+      box-shadow: 0 2px 8px rgba(20,20,20,0.06);
+      position: relative;
+      z-index: 5;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      color: var(--dark);
+      margin: 0;
+    }
+
+    /* Primary action in header uses the yellow accent */
+    header button {
+      background: linear-gradient(90deg, var(--yellow), var(--orange));
+      color: #111;
+      border: none;
+      padding: 11px 22px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 6px 18px rgba(255,185,50,0.12);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+    header button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(255,160,30,0.15);
+    }
+
+    /* Main layout (simple flex for beginners) */
+    main {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    /* Left section: hero with polka dots overlay */
+    .left-section {
+      flex: 1;
+      background-color: var(--blue); /* primary blue background */
+      color: var(--white);
+      padding: 60px 40px;
+      min-width: 300px;
+      position: relative; /* for pseudo-element */
+      overflow: hidden;   /* keep decorative dots inside */
+    }
+
+    /* Polka dots overlay: subtle yellow dots on the blue */
+    .left-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      /* repeating radial gradient creates polka dots */
+      background-image: radial-gradient(circle, rgba(255,201,7,0.12) 2px, transparent 3px);
+      background-size: 24px 24px;
+      pointer-events: none; /* so it doesn't block clicks */
+      mix-blend-mode: screen; /* gentle blend with the background */
+      transform: translateZ(0);
+    }
+
+    /* Add a soft diagonal stripe accent using another pseudo-element */
+    .left-section::after {
+      content: "";
+      position: absolute;
+      right: -60px;
+      top: -40%;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle at 30% 30%, rgba(139,209,203,0.06), transparent 40%);
+      transform: rotate(18deg);
+      filter: blur(12px);
+      pointer-events: none;
+    }
+
+    /* Headline uses the bright yellow for contrast */
+    .left-section h2 {
+      color: var(--yellow);
+      font-size: 2.6rem;
+      margin-bottom: 18px;
+      line-height: 1.1;
+      text-shadow: 0 6px 22px rgba(0,0,0,0.08);
+    }
+
+    /* Paragraph text is a soft white for readability */
+    .left-section p {
+      color: rgba(255,255,255,0.96);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 28px;
+      max-width: 520px;
+    }
+
+    /* Subscribe box layout */
+    .subscribe-box {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Email input: rounded, slightly larger */
+    .subscribe-box input[type="email"] {
+      padding: 12px;
+      width: 260px;
+      border: none;
+      border-radius: 10px;
+      background-color: rgba(255,255,255,0.12);
+      color: var(--white);
+      font-size: 0.98rem;
+      outline: none;
+      transition: box-shadow 160ms ease, transform 160ms ease;
+    }
+    .subscribe-box input[type="email"]:focus {
+      box-shadow: 0 6px 18px rgba(46,157,247,0.12);
+      transform: translateY(-2px);
+    }
+
+    /* Subscribe button uses the orange accent to stand out and is larger */
+    .subscribe-box button {
+      background: linear-gradient(90deg, var(--orange), var(--pink));
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(255,120,60,0.12);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+    .subscribe-box button:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 36px rgba(255,100,50,0.16);
+    }
+
+    /* Right section: keep hero image and add floating decorative circles */
+    .right-section {
+      flex: 1;
+      position: relative;
+      background-image:
+        linear-gradient( rgba(139,209,203,0.15), rgba(46,157,247,0.12) ),
+        url('https://cdn.charitywater.org/images/hero.jpg');
+      background-size: cover;
+      background-position: center;
+      min-height: 500px;
+      overflow: hidden;
+    }
+
+    /* Decorative floating circles on the right */
+    .right-section::before,
+    .right-section::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.9;
+      filter: blur(14px);
+      mix-blend-mode: screen;
+      animation: floaty 8s ease-in-out infinite;
+    }
+    .right-section::before {
+      width: 220px;
+      height: 220px;
+      right: 10%;
+      top: 10%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,201,7,0.12), transparent 50%);
+      animation-duration: 9s;
+    }
+    .right-section::after {
+      width: 320px;
+      height: 320px;
+      left: -5%;
+      bottom: -5%;
+      background: radial-gradient(circle at 60% 60%, rgba(139,209,203,0.10), transparent 55%);
+      animation-duration: 11s;
+      animation-direction: reverse;
+    }
+
+    /* Gentle floating animation for accents */
+    @keyframes floaty {
+      0% { transform: translateY(0) translateX(0) scale(1); }
+      50% { transform: translateY(-14px) translateX(6px) scale(1.02); }
+      100% { transform: translateY(0) translateX(0) scale(1); }
+    }
+
+    /* New: centered hero card to fill the blank space on the right */
+    .right-section .hero-card {
+      position: absolute;
+      right: 6%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 78%;
+      max-width: 420px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.92));
+      padding: 22px;
+      border-radius: 14px;
+      box-shadow: 0 18px 50px rgba(16,24,40,0.14);
+      color: #102027;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 6;
+      /* subtle border with primary blue tint */
+      border: 1px solid rgba(46,157,247,0.08);
+    }
+
+    /* Small badge on top of the card */
+    .hero-badge {
+      display: inline-block;
+      background: linear-gradient(90deg, var(--yellow), var(--orange));
+      color: #111;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      width: fit-content;
+      box-shadow: 0 6px 18px rgba(255,160,30,0.08);
+    }
+
+    .hero-title {
+      margin: 0;
+      font-size: 1.25rem;
+      color: #082033;
+      line-height: 1.15;
+    }
+
+    .hero-lead {
+      margin: 0;
+      color: #274148;
+      font-size: 0.98rem;
+      line-height: 1.4;
+    }
+
+    /* CTA buttons inside the card */
+    .hero-cta {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .hero-cta .btn-donate {
+      flex: 1;
+      background: linear-gradient(90deg, var(--orange), var(--pink));
+      color: white;
+      border: none;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(255,110,70,0.12);
+      transition: transform 140ms ease;
+    }
+    .hero-cta .btn-donate:hover { transform: translateY(-3px); }
+
+    .hero-cta .btn-ghost {
+      flex: 1;
+      background: transparent;
+      border: 1px solid rgba(2, 112, 238, 0.12);
+      color: var(--blue);
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .hero-cta .btn-ghost:hover {
+      background: rgba(46,157,247,0.06);
+    }
+
+    /* Small stats row to show impact numbers */
+    .stat-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+      justify-content: space-between;
+    }
+    .stat {
+      text-align: center;
+      flex: 1;
+      min-width: 0;
+    }
+    .stat strong {
+      display: block;
+      font-size: 1.05rem;
+      color: #082033;
+    }
+    .stat span {
+      display: block;
+      font-size: 0.78rem;
+      color: #4b6b6b;
+      margin-top: 4px;
+    }
+
+    /* Make the card responsive on small screens */
+    @media (max-width: 980px) {
+      .right-section .hero-card {
+        right: 6%;
+        top: auto;
+        bottom: 8%;
+        transform: none;
+        width: calc(88%);
+        max-width: none;
+      }
+    }
+    @media (max-width: 520px) {
+      .right-section .hero-card {
+        position: static;
+        width: 100%;
+        border-radius: 12px;
+        margin: 20px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.96));
+      }
+      .hero-cta { flex-direction: column; }
+    }
+
+    /* Footer stays simple and clean */
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: var(--white);
+      color: var(--dark);
+      font-size: 0.9rem;
+    }
+
+    /* Small responsive tweak for very narrow screens */
+    @media (max-width: 720px) {
+      .left-section h2 {
+        font-size: 2rem;
+      }
+      .subscribe-box input[type="email"] {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Hero Section: This is the main banner at the top of the page -->
-    <section class="hero">
-        <!-- Main headline -->
-        <h1>Clean Water for Everyone</h1>
-        <!-- Subheadline -->
-        <p>Join us in bringing safe, clean water to communities in need.</p>
+
+  <header>
+    <h1>🏛️ Charity:Water</h1>
+    <button>Free Trial</button>
+  </header>
+
+  <main>
+    <section class="left-section">
+      <h2>Lead the Change You Want to See.</h2>
+      <p>At charity: water, your passion fuels progress. Together, we’re turning clean water into lasting impact backed by data, driven by hope, and shared with complete transparency.</p>
+
+      <div class="subscribe-box">
+        <input type="email" placeholder="Enter email">
+        <button>Subscribe</button>
+      </div>
     </section>
 
-    <!-- Story Section: This tells the story of the nonprofit -->
-    <section class="story">
-        <h2>Our Story</h2>
-        <p>
-         
-    </section>
+    <section class="right-section">
+      <!-- New content: a card that fills the blank area with CTA + stats -->
+      <div class="hero-card" role="region" aria-label="Support our work">
+        <div class="hero-badge">100% of donations fund water</div>
+        <h3 class="hero-title">Bring clean water to communities</h3>
+        <p class="hero-lead">Join us to build sustainable water projects — transparent, verified, and lasting.</p>
 
-    <!-- Real-World Impact Story Section -->
-    <section class="impact-story">
-        <!-- Section headline -->
-        <h2>Real Impact: Meet Amina</h2>
-        <!-- Container for image and text -->
-        <div class="impact-content">
-            <!-- Impact image -->
-            <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" alt="Amina smiling with clean water" class="impact-image">
-            <!-- Impact story text -->
-            <p>
-                Amina used to walk miles every day to collect water for her family. Thanks to your support, her village now has a clean water well. Amina can go to school and her family is healthier and happier.
-            </p>
+        <div class="hero-cta">
+          <button class="btn-donate">Donate</button>
+          <button class="btn-ghost">Learn more</button>
         </div>
-    </section>
 
-    <!-- Call-to-Action Section: This encourages visitors to take action -->
-    <section class="call-to-action">
-        <h2>Make a Difference</h2>
-        <p>Your support can help save lives. Every donation brings us closer to a world with clean water for all.</p>
-        <a href="#" class="donate-button">Donate Now</a>
+        <div class="stat-row" aria-hidden="false">
+          <div class="stat"><strong>12,482</strong><span>People helped</span></div>
+          <div class="stat"><strong>1,234</strong><span>Wells built</span></div>
+          <div class="stat"><strong>100%</strong><span>Fund allocation</span></div>
+        </div>
+      </div>
     </section>
+  </main>
+
+  <footer>
+    charity: water © 2025
+  </footer>
+
 </body>
 </html>
